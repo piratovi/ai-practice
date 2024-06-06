@@ -1,13 +1,9 @@
 package com.kolosov.aipractice.repository;
 
-import com.kolosov.aipractice.dto.TextData;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -20,14 +16,15 @@ public class TextDataRepository {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public TextData saveTextData(String text, String type) {
-        var textData = new TextData(text, type);
-        return mongoTemplate.save(textData);
+    public <T> T save(T data) {
+        return mongoTemplate.save(data);
     }
 
-    public List<String> getTextDataByType(String type) {
-        var query = new Query().addCriteria(Criteria.where("type").is(type));
-        List<TextData> result = mongoTemplate.find(query, TextData.class);
-        return result.stream().map(TextData::text).toList();
+    public <T> List<T> getRecentData(Class<T> entityClass, int limit) {
+        var query = new Query()
+                .with(Sort.by(Sort.Direction.DESC, "_id"))
+                .limit(limit);
+
+        return mongoTemplate.find(query, entityClass);
     }
 }

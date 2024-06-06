@@ -1,5 +1,6 @@
 package com.kolosov.aipractice.asker;
 
+import com.kolosov.aipractice.dto.Flattery;
 import com.kolosov.aipractice.repository.TextDataRepository;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
@@ -47,7 +48,8 @@ public class Flatterer {
                 """);
         Message systemMessage = systemPromptTemplate.createMessage();
 
-        List<AssistantMessage> assistantMessages = textDataRepository.getTextDataByType(FLATTERY).stream()
+        List<AssistantMessage> assistantMessages = textDataRepository.getRecentData(Flattery.class, 5).stream()
+                .map(Flattery::text)
                 .map(AssistantMessage::new)
                 .toList();
 
@@ -58,7 +60,7 @@ public class Flatterer {
 
         ChatResponse chatResponse = chatClient.call(new Prompt(messages));
         String result = chatResponse.getResult().getOutput().getContent();
-        textDataRepository.saveTextData(result, FLATTERY);
+        textDataRepository.save(new Flattery(result));
 
         System.out.println(result);
     }
