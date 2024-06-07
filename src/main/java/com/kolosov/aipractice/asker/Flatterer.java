@@ -1,7 +1,7 @@
 package com.kolosov.aipractice.asker;
 
 import com.kolosov.aipractice.dto.Flattery;
-import com.kolosov.aipractice.repository.TextDataRepository;
+import com.kolosov.aipractice.repository.MongoRepository;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -26,13 +26,13 @@ public class Flatterer {
 
     private final ChatClient chatClient;
 
-    private final TextDataRepository textDataRepository;
+    private final MongoRepository mongoRepository;
 
     public Flatterer(
-            @Qualifier("openAiChatClient") ChatClient chatClient, TextDataRepository textDataRepository
+            @Qualifier("openAiChatClient") ChatClient chatClient, MongoRepository mongoRepository
     ) {
         this.chatClient = chatClient;
-        this.textDataRepository = textDataRepository;
+        this.mongoRepository = mongoRepository;
     }
 
     @Command(command = "flatter")
@@ -48,7 +48,7 @@ public class Flatterer {
                 """);
         Message systemMessage = systemPromptTemplate.createMessage();
 
-        List<AssistantMessage> assistantMessages = textDataRepository.getRecentData(Flattery.class, 5).stream()
+        List<AssistantMessage> assistantMessages = mongoRepository.getRecentData(Flattery.class, 5).stream()
                 .map(Flattery::text)
                 .map(AssistantMessage::new)
                 .toList();
@@ -60,7 +60,7 @@ public class Flatterer {
 
         ChatResponse chatResponse = chatClient.call(new Prompt(messages));
         String result = chatResponse.getResult().getOutput().getContent();
-        textDataRepository.save(new Flattery(result));
+        mongoRepository.save(new Flattery(result));
 
         System.out.println(result);
     }
