@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class TextDataRepository {
+public class MongoRepository {
 
     private final MongoTemplate mongoTemplate;
 
-    public TextDataRepository(MongoTemplate mongoTemplate) {
+    public MongoRepository(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
