@@ -16,6 +16,7 @@ import org.springframework.shell.command.annotation.Command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Command
 public class Flatterer {
@@ -36,9 +37,9 @@ public class Flatterer {
     }
 
     @Command(command = "flatter")
-    public void flatter() {
+    public void flatter(String userInput) {
         PromptTemplate promptTemplate = new PromptTemplate(flattery);
-        var userMessage = promptTemplate.createMessage();
+        var userMessage = promptTemplate.createMessage(Map.of("userInput", userInput));
 
         var systemPromptTemplate = new SystemPromptTemplate("""
                 You are very experienced flatterer of women.

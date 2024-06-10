@@ -1,16 +1,18 @@
 package com.kolosov.aipractice;
 
-import com.kolosov.aipractice.rag.RagAsker;
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.shell.command.annotation.CommandScan;
 
 @SpringBootApplication
 @CommandScan
+@ComponentScan(basePackages = {
+        "com.kolosov.aipractice",
+        "com.kolosov.openmeteosdk"
+})
 public class AiPracticeApplication implements CommandLineRunner {
 
     public AiPracticeApplication() {
