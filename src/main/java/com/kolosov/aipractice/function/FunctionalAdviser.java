@@ -14,14 +14,11 @@ import java.util.List;
 public class FunctionalAdviser {
 
     private final ChatClient chatClient;
-    private final OpenMeteoFunction openMeteoFunction;
 
     public FunctionalAdviser(
-            @Qualifier("openAiChatClient")
-            ChatClient chatClient, OpenMeteoFunction openMeteoFunction
+            @Qualifier("openAiChatClient") ChatClient chatClient
     ) {
         this.chatClient = chatClient;
-        this.openMeteoFunction = openMeteoFunction;
     }
 
     @Command(command = "advice")
@@ -38,12 +35,11 @@ public class FunctionalAdviser {
 
         var messages = List.of(systemMessage, userMessage);
 
-
-        OpenAiChatOptions chatOptions = OpenAiChatOptions.builder()
-                .withFunction("OpenMeteoFunction")
+        OpenAiChatOptions aiChatOptions = OpenAiChatOptions.builder()
+                .withFunction("weekForecast")
                 .build();
 
-        var prompt = new Prompt(messages, chatOptions);
+        var prompt = new Prompt(messages, aiChatOptions);
         var chatResponse = chatClient.call(prompt);
         String content = chatResponse.getResult().getOutput().getContent();
         System.out.println(content);
