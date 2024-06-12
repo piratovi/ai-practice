@@ -1,27 +1,24 @@
 package com.kolosov.aipractice.rag;
 
-import org.springframework.ai.embedding.EmbeddingClient;
-import org.springframework.ai.ollama.OllamaEmbeddingClient;
-import org.springframework.ai.openai.OpenAiEmbeddingClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.ollama.OllamaEmbeddingModel;
+import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
+@RequiredArgsConstructor
 public class OllamaEmbeddingClientBridge {
 
-    private final OllamaEmbeddingClient ollamaEmbeddingClient;
-    private final OpenAiEmbeddingClient openAiEmbeddingClient;
+    private final OllamaEmbeddingModel ollamaEmbeddingModel;
+    private final OpenAiEmbeddingModel openAiEmbeddingModel;
 
-    public OllamaEmbeddingClientBridge(OllamaEmbeddingClient ollamaEmbeddingClient, OpenAiEmbeddingClient openAiEmbeddingClient) {
-        this.ollamaEmbeddingClient = ollamaEmbeddingClient;
-        this.openAiEmbeddingClient = openAiEmbeddingClient;
-    }
 
     @Bean
     @Primary
-    public EmbeddingClient embeddingClient() {
-        return ollamaEmbeddingClient;
+    public EmbeddingModel embeddingClient() {
+        return ollamaEmbeddingModel;
     }
 }

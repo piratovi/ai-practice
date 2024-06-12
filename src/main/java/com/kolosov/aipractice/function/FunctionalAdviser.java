@@ -1,6 +1,6 @@
 package com.kolosov.aipractice.function;
 
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -13,12 +13,12 @@ import java.util.List;
 @Command
 public class FunctionalAdviser {
 
-    private final ChatClient chatClient;
+    private final ChatModel chatModel;
 
     public FunctionalAdviser(
-            @Qualifier("openAiChatClient") ChatClient chatClient
+            @Qualifier("openAiChatModel") ChatModel chatModel
     ) {
-        this.chatClient = chatClient;
+        this.chatModel = chatModel;
     }
 
     @Command(command = "advice")
@@ -40,7 +40,7 @@ public class FunctionalAdviser {
                 .build();
 
         var prompt = new Prompt(messages, aiChatOptions);
-        var chatResponse = chatClient.call(prompt);
+        var chatResponse = chatModel.call(prompt);
         String content = chatResponse.getResult().getOutput().getContent();
         System.out.println(content);
     }

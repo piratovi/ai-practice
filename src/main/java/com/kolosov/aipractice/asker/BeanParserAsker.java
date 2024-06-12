@@ -1,7 +1,7 @@
 package com.kolosov.aipractice.asker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -15,14 +15,14 @@ import java.util.Map;
 @Service
 public class BeanParserAsker {
 
-    private final ChatClient chatClient;
+    private final ChatModel chatModel;
     private final ObjectMapper objectMapper;
 
     public BeanParserAsker(
-            @Qualifier("openAiChatClient") ChatClient chatClient,
+            @Qualifier("openAiChatModel") ChatModel chatModel,
             ObjectMapper objectMapper
     ) {
-        this.chatClient = chatClient;
+        this.chatModel = chatModel;
         this.objectMapper = objectMapper;
     }
 
@@ -31,7 +31,7 @@ public class BeanParserAsker {
         var format = outputParser.getFormat();
 
         var prompt = getPrompt(format, "trendy techs");
-        var chatResponse = chatClient.call(prompt);
+        var chatResponse = chatModel.call(prompt);
         String content = chatResponse.getResult().getOutput().getContent();
 //        content = content.replace("'''json\n", "").replace("\n'''", "");
         System.out.println(content);

@@ -1,6 +1,5 @@
 package com.kolosov.aipractice.rag;
 
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
@@ -19,7 +18,7 @@ import java.util.List;
 @Service
 public class DocumentRagLoader {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RagConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RagToFileConfiguration.class);
 
     private final JdbcClient jdbcClient;
 

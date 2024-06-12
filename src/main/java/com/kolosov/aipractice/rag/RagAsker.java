@@ -1,16 +1,13 @@
 package com.kolosov.aipractice.rag;
 
-import org.springframework.ai.chat.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.ai.vectorstore.filter.Filter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.shell.command.annotation.Command;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -19,14 +16,14 @@ import java.util.stream.Collectors;
 @Command
 public class RagAsker {
 
-    private final ChatClient chatClient;
+    private final ChatModel chatModel;
     private final VectorStore vectorStore;
 
     public RagAsker(
-            @Qualifier("openAiChatClient") ChatClient chatClient,
+            @Qualifier("openAiChatModel") ChatModel chatModel,
             VectorStore vectorStore
     ) {
-        this.chatClient = chatClient;
+        this.chatModel = chatModel;
         this.vectorStore = vectorStore;
     }
 
@@ -57,7 +54,7 @@ public class RagAsker {
 
         var messages = List.of(systemMessage, userMessage);
         var prompt = new Prompt(messages);
-        var chatResponse = chatClient.call(prompt);
+        var chatResponse = chatModel.call(prompt);
         String content = chatResponse.getResult().getOutput().getContent();
         System.out.println(content);
     }
