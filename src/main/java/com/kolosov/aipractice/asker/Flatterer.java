@@ -22,6 +22,7 @@ import java.util.Map;
 public class Flatterer {
 
     private static final String FLATTERY = "flattery";
+
     @Value("classpath:/prompts/flattery.st")
     private Resource flattery;
 

@@ -61,3 +61,17 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+//download fresh Snapshot
+configurations {
+    implementation {
+        resolutionStrategy {
+            eachDependency { DependencyResolveDetails details ->
+                if (details.requested.version.endsWith('-SNAPSHOT')) {
+                    cacheDynamicVersionsFor 0, 'seconds'
+                    cacheChangingModulesFor 0, 'seconds'
+                }
+            }
+        }
+    }
+}

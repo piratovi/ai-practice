@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Configuration
+@Deprecated
 public class RagToFileConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RagToFileConfiguration.class);
@@ -27,7 +28,6 @@ public class RagToFileConfiguration {
     private Resource vumi;
 
     private final String vumiVectorStoreName = "vumiVectorStore.json";
-
 
     @SneakyThrows
 //    @Bean
