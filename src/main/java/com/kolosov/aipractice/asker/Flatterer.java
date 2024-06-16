@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.shell.command.annotation.Command;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +28,15 @@ public class Flatterer {
     private Resource flattery;
 
     private final ChatModel chatModel;
-
     private final MongoRepository mongoRepository;
+    private final ChatGPTCostCalculator chatGPTCostCalculator;
 
     public Flatterer(
-            @Qualifier("openAiChatModel") ChatModel chatModel, MongoRepository mongoRepository
+            @Qualifier("openAiChatModel") ChatModel chatModel, MongoRepository mongoRepository, ChatGPTCostCalculator chatGPTCostCalculator
     ) {
         this.chatModel = chatModel;
         this.mongoRepository = mongoRepository;
+        this.chatGPTCostCalculator = chatGPTCostCalculator;
     }
 
     @Command(command = "flatter")
@@ -61,6 +63,10 @@ public class Flatterer {
         messages.add(userMessage);
 
         ChatResponse chatResponse = chatModel.call(new Prompt(messages));
+        BigDecimal cost = chatGPTCostCalculator.calculateCost(chatResponse);
+
+        System.out.println("Cost: " + cost + " cents.");
+
         String result = chatResponse.getResult().getOutput().getContent();
         mongoRepository.save(new Flattery(result));
 
