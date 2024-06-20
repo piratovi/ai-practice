@@ -4,7 +4,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.ChatOptionsBuilder;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.shell.command.annotation.Command;
 import reactor.core.publisher.Flux;
 
@@ -14,9 +14,9 @@ public class ChatClientStreamer {
     private final ChatModel chatModel;
 
     public ChatClientStreamer(
-            @Qualifier("openAiChatModel") ChatModel chatModel
+            OllamaChatModel ollamaChatModel
     ) {
-        this.chatModel = chatModel;
+        this.chatModel = ollamaChatModel;
     }
 
     @Command(command = "chatClientStream")

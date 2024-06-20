@@ -16,7 +16,7 @@ public class ChatGPTCostCalculator {
     @Value("${spring.ai.openai.chat.options.token.centcost.output}")
     BigDecimal centPerOutputToken;
 
-    BigDecimal calculateCost(ChatResponse chatResponse) {
+    public BigDecimal calculateCost(ChatResponse chatResponse) {
         Usage usage = chatResponse.getMetadata().getUsage();
 
         BigDecimal inputTokens = BigDecimal.valueOf(usage.getPromptTokens());

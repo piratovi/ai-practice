@@ -1,4 +1,4 @@
-package com.kolosov.aipractice.rag;
+package com.kolosov.aipractice.embedding;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingModel;
