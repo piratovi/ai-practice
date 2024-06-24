@@ -8,8 +8,6 @@ import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.ai.vectorstore.filter.Filter.Expression;
-import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.shell.command.annotation.Command;
 
@@ -24,20 +22,23 @@ public class RagAsker {
     private final ChatModel chatModel;
     private final VectorStore vectorStore;
     private final ChatGPTCostCalculator calculator;
+    private final RagSearchRequestService ragSearchRequestService;
 
     public RagAsker(
             @Qualifier("openAiChatModel") ChatModel chatModel,
             VectorStore vectorStore,
-            ChatGPTCostCalculator calculator
+            ChatGPTCostCalculator calculator,
+            RagSearchRequestService ragSearchRequestService
     ) {
         this.chatModel = chatModel;
         this.vectorStore = vectorStore;
         this.calculator = calculator;
+        this.ragSearchRequestService = ragSearchRequestService;
     }
 
     @Command(command = "rag")
     public String run(String question, String fileName) {
-        SearchRequest searchRequest = prepareSearchRequest(question, fileName);
+        SearchRequest searchRequest = ragSearchRequestService.prepareSearchRequest(question, fileName);
         List<Document> similaritySearchResult = vectorStore.similaritySearch(searchRequest);
 
         String documents = similaritySearchResult.stream()
@@ -69,13 +70,5 @@ public class RagAsker {
 
         return chatResponse.getResult().getOutput().getContent();
     }
-
-    private SearchRequest prepareSearchRequest(String question, String fileName) {
-        var filterExpressionBuilder = new FilterExpressionBuilder();
-        Expression expression = filterExpressionBuilder.eq("file_name", fileName).build();
-        return SearchRequest.query(question)
-                .withFilterExpression(expression);
-    }
-
 
 }

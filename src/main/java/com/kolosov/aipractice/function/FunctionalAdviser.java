@@ -22,7 +22,7 @@ public class FunctionalAdviser {
     }
 
     @Command(command = "advice")
-    public void advice() {
+    public String advice() {
         var systemPromptTemplate = new SystemPromptTemplate("""
                 You are the best advisor about leisure time activities.
                 """);
@@ -41,7 +41,6 @@ public class FunctionalAdviser {
 
         var prompt = new Prompt(messages, aiChatOptions);
         var chatResponse = chatModel.call(prompt);
-        String content = chatResponse.getResult().getOutput().getContent();
-        System.out.println(content);
+        return chatResponse.getResult().getOutput().getContent();
     }
 }

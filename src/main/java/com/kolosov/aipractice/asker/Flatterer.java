@@ -63,8 +63,8 @@ public class Flatterer {
         messages.add(userMessage);
 
         ChatResponse chatResponse = chatModel.call(new Prompt(messages));
-        BigDecimal cost = chatGPTCostCalculator.calculateCost(chatResponse);
 
+        BigDecimal cost = chatGPTCostCalculator.calculateCost(chatResponse);
         System.out.println("Cost: " + cost + " cents.");
 
         String result = chatResponse.getResult().getOutput().getContent();

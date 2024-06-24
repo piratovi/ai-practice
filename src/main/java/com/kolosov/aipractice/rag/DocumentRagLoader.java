@@ -11,12 +11,11 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Deprecated
-@Service
+//@Service
 public class DocumentRagLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RagToFileConfiguration.class);
