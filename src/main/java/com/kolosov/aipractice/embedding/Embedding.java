@@ -32,6 +32,7 @@ public class Embedding {
     //This method represents ETL pipeline
     @Command(command = "embed")
     public void embed(String absolutePath) {
+        //TODO change to resource
         //Extract
         String fileUrl = "file:///" + absolutePath.replace("\\", "/");
         PdfDocumentReaderConfig pdfDocumentReaderConfig = preparePdfDocumentReaderConfig();

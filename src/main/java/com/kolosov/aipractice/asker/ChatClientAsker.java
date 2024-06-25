@@ -1,46 +1,53 @@
 package com.kolosov.aipractice.asker;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.ChatOptionsBuilder;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.shell.command.annotation.Command;
+import org.springframework.util.MimeTypeUtils;
+
+import java.math.BigDecimal;
 
 @Command
 public class ChatClientAsker {
 
     private final ChatModel chatModel;
-    private final VectorStore vectorStore;
+    private final ChatGPTCostCalculator calculator;
 
     public ChatClientAsker(
             @Qualifier("openAiChatModel") ChatModel chatModel,
-            VectorStore vectorStore
+            ChatGPTCostCalculator calculator
     ) {
         this.chatModel = chatModel;
-        this.vectorStore = vectorStore;
+        this.calculator = calculator;
     }
 
     @Command(command = "chatClient")
-    public String chatClient(String message) {
-
+    public String chatClient(String message, String pathToJpeg) {
         ChatClient chatClient = ChatClient.create(chatModel);
 
         ChatOptions chatOptions = ChatOptionsBuilder.builder()
                 .withTemperature(1F)
                 .build();
 
-        QuestionAnswerAdvisor advisor = new QuestionAnswerAdvisor(vectorStore);
+        Resource imageResource = new FileSystemResource(pathToJpeg);
 
-        return chatClient.prompt()
+        ChatResponse chatResponse = chatClient.prompt()
                 .options(chatOptions)
-                .user(message)
+                .user(promptUserSpec -> promptUserSpec.text(message).media(MimeTypeUtils.IMAGE_JPEG, imageResource))
                 .system("You are a ship captain. Give a response from your scope")
-//                .advisors(advisor)
                 .call()
-                .content();
+                .chatResponse();
+
+        BigDecimal cost = calculator.calculateCost(chatResponse);
+        System.out.println("Cost: " + cost + " cents.");
+
+        return chatResponse.getResult().getOutput().getContent();
     }
 
 }
