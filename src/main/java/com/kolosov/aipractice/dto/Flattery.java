@@ -1,15 +1,26 @@
 package com.kolosov.aipractice.dto;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Document("flattery")
-public record Flattery(
-        @Id String id,
-        String text
-) {
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Flattery {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String text;
 
     public Flattery(String text) {
-        this(null, text);
+        this.text = text;
     }
+
 }

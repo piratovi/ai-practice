@@ -9,14 +9,3 @@ services:
       - "org.springframework.boot.service-connection=postgres"
     ports:
       - '5432:5432'
-  mongodb:
-    image: mongo:latest  # Use the latest MongoDB image
-    restart: always
-    environment:
-      MONGO_INITDB_DATABASE: mydb
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin # Or your preferred username
-      MONGO_INITDB_ROOT_PASSWORD: password  # Use a strong password
-    ports:
-      - "27017:27017"
-    labels:
-      - "org.springframework.boot.service-connection=mongodb"

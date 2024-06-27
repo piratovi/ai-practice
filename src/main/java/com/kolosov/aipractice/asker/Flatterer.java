@@ -1,7 +1,7 @@
 package com.kolosov.aipractice.asker;
 
 import com.kolosov.aipractice.dto.Flattery;
-import com.kolosov.aipractice.repository.MongoRepository;
+import com.kolosov.aipractice.repository.FlatteryRepository;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatModel;
@@ -22,20 +22,20 @@ import java.util.Map;
 @Command
 public class Flatterer {
 
-    private static final String FLATTERY = "flattery";
-
     @Value("classpath:/prompts/flattery.st")
     private Resource flattery;
 
     private final ChatModel chatModel;
-    private final MongoRepository mongoRepository;
+    private final FlatteryRepository flatteryRepository;
     private final ChatGPTCostCalculator chatGPTCostCalculator;
 
     public Flatterer(
-            @Qualifier("openAiChatModel") ChatModel chatModel, MongoRepository mongoRepository, ChatGPTCostCalculator chatGPTCostCalculator
+            @Qualifier("openAiChatModel") ChatModel chatModel,
+            FlatteryRepository flatteryRepository,
+            ChatGPTCostCalculator chatGPTCostCalculator
     ) {
         this.chatModel = chatModel;
-        this.mongoRepository = mongoRepository;
+        this.flatteryRepository = flatteryRepository;
         this.chatGPTCostCalculator = chatGPTCostCalculator;
     }
 
@@ -52,8 +52,8 @@ public class Flatterer {
                 """);
         Message systemMessage = systemPromptTemplate.createMessage();
 
-        List<AssistantMessage> assistantMessages = mongoRepository.getRecentData(Flattery.class, 5).stream()
-                .map(Flattery::text)
+        List<AssistantMessage> assistantMessages = flatteryRepository.findLastFiveFlatters().stream()
+                .map(Flattery::getText)
                 .map(AssistantMessage::new)
                 .toList();
 
@@ -68,7 +68,7 @@ public class Flatterer {
         System.out.println("Cost: " + cost + " cents.");
 
         String result = chatResponse.getResult().getOutput().getContent();
-        mongoRepository.save(new Flattery(result));
+        flatteryRepository.save(new Flattery(result));
 
         System.out.println(result);
     }
